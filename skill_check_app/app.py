@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
+
 # Load environment variables
 load_dotenv()
 ENV_GROQ_KEY = os.getenv("GROQ_API_KEY", "")
@@ -11,6 +12,7 @@ ENV_GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 from modules.parser import parse_resume, parse_jd
 from modules.analyzer import analyze_resume_vs_jd
 from modules.rewriter import rewrite_full_resume_html
+# from modules.exporter import export_html_to_pdf
 from modules.exporter import export_html_to_pdf
 
 # External Clients
