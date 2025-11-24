@@ -2,7 +2,6 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-
 # Load environment variables
 load_dotenv()
 ENV_GROQ_KEY = os.getenv("GROQ_API_KEY", "")
@@ -12,7 +11,6 @@ ENV_GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 from modules.parser import parse_resume, parse_jd
 from modules.analyzer import analyze_resume_vs_jd
 from modules.rewriter import rewrite_full_resume_html
-# from modules.exporter import export_html_to_pdf
 from modules.exporter import export_html_to_pdf
 
 # External Clients
@@ -21,7 +19,7 @@ import streamlit.components.v1 as components
 
 
 # ======================================================
-# Streamlit UI Setup
+# Streamlit Setup
 # ======================================================
 st.set_page_config(page_title="AI Resume Analyzer + Rewriter", layout="wide")
 st.title("🔥 AI Resume Analyzer + HTML Resume Generator")
@@ -31,7 +29,7 @@ tabs = st.tabs(["📄 Resume ↔ JD Analyzer", "✍️ HTML Resume Rewriter"])
 
 
 # ======================================================
-# Sidebar — Provider + Keys
+# Sidebar — Provider + API Keys
 # ======================================================
 st.sidebar.header("⚙️ LLM Provider & API Keys")
 
@@ -53,14 +51,12 @@ else:
     gemini_key = ""
 
 
-
-# Fetch Ollama model list
+# Fetch Ollama Models
 def fetch_ollama_models():
     try:
         return sorted([m["name"] for m in ollama.list()["models"]])
     except:
         return ["mistral", "llama3", "mixtral"]
-
 
 
 
@@ -77,25 +73,22 @@ with tabs[0]:
         resume_file = st.file_uploader("Upload Resume", type=["pdf", "docx", "txt"])
 
     with col2:
-        jd_file = st.file_uploader("Upload Job Description", type=["pdf", "docx", "txt"])
+        jd_file = st.file_uploader("Upload JD", type=["pdf", "docx", "txt"])
 
 
-    # MODEL SELECTION
     st.header("2️⃣ Select Model")
 
     if provider == "gemini":
         model_list = ["gemini-2.0-flash"]
-
     elif provider == "groq":
         model_list = ["llama-3.3-70b-versatile"]
-
     else:
         model_list = fetch_ollama_models()
 
     model = st.selectbox("Available Model", model_list)
 
 
-    # RUN ANALYSIS
+    # === RUN ANALYSIS ===
     if st.button("Analyze Resume vs JD", type="primary", use_container_width=True):
 
         if not resume_file or not jd_file:
@@ -109,15 +102,15 @@ with tabs[0]:
             st.error("Parsing failed. Try TXT for debugging.")
             st.stop()
 
-        # Persist for rewriter
+        st.success("✓ Files parsed successfully!")
+
+        # Save to session for rewriter
         st.session_state.resume_text = resume_text
         st.session_state.jd_text = jd_text
         st.session_state.provider = provider
         st.session_state.model = model
         st.session_state.groq_key = groq_key
         st.session_state.gemini_key = gemini_key
-
-        st.success("✓ Files parsed successfully!")
 
         st.header("3️⃣ LLM ATS Analysis")
 
@@ -135,38 +128,39 @@ with tabs[0]:
             st.error(result["error"])
             st.stop()
 
-        # Save analysis
+        # Save for the rewriter
         st.session_state.analysis_done = True
         st.session_state.analysis_result = result
-        st.session_state.matched_skills = result["matched_skills"]
-        st.session_state.missing_skills = result["missing_skills"]
-        st.session_state.fit_score = result["fit_score"]
+        st.session_state.matched_skills = result.get("matched_skills", [])
+        st.session_state.missing_skills = result.get("missing_skills", [])
+        st.session_state.fit_score = result.get("fit_score", 0)
 
-        # Display Results
+        # Display Key Metrics
         col1, col2, col3 = st.columns(3)
-        col1.metric("ATS Score", result["ats_score"])
-        col2.metric("Fit Score", result["fit_score"])
-        col3.metric("Keyword Coverage", result["keyword_coverage"])
+        col1.metric("ATS Score", result.get("ats_score", 0))
+        col2.metric("Fit Score", result.get("fit_score", 0))
+        col3.metric("Keyword Coverage", result.get("keyword_coverage", 0))
 
         st.subheader("Matched Skills")
-        st.write(", ".join(result["matched_skills"]))
+        st.write(", ".join(result.get("matched_skills", [])))
 
         st.subheader("Missing Skills")
-        st.write(", ".join(result["missing_skills"]))
+        st.write(", ".join(result.get("missing_skills", [])))
 
-        st.subheader("Summary Alignment")
-        st.write(result["summary_alignment"])
+        st.subheader("Summary Feedback")
+        st.write(result.get("summary_feedback", ""))
 
-        st.subheader("Experience Alignment")
-        st.write(result["experience_alignment"])
+        st.subheader("Experience Feedback")
+        st.write(result.get("experience_feedback", ""))
 
-        st.subheader("Red Flags")
-        st.write(result["red_flags"])
+        st.subheader("Missing Keywords")
+        mk = result.get("missing_keywords", [])
+        st.write(", ".join(mk) if mk else "None")
 
-        st.subheader("Recommendations to Improve Resume")
-        st.write(result["recommendations"])
+        st.subheader("Final Recommendation")
+        st.write(result.get("final_recommendation", ""))
 
-        # Debug
+        # Debug raw text
         st.markdown("---")
         with st.expander("📄 Parsed Resume"):
             st.text(resume_text)
@@ -186,7 +180,6 @@ with tabs[1]:
         st.info("Run the Analyzer first in Tab 1.")
         st.stop()
 
-    # Template selection
     template = st.selectbox(
         "Select Resume Template",
         ["minimal", "professional", "modern"],
@@ -212,7 +205,6 @@ with tabs[1]:
 
     html_code = st.session_state.get("rewritten_resume_html", "")
 
-    # Preview + Editor
     col1, col2 = st.columns(2)
 
     with col1:
@@ -226,11 +218,10 @@ with tabs[1]:
 
     st.markdown("---")
 
-    # === Export ===
     if html_code.strip():
         os.makedirs("outputs", exist_ok=True)
 
-        # Save HTML
+        # Export HTML
         html_path = "outputs/final_resume.html"
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(html_code)
@@ -243,7 +234,7 @@ with tabs[1]:
                 mime="text/html"
             )
 
-        # Save PDF using pure-Python ReportLab exporter
+        # Export PDF (ReportLab)
         pdf_path = "outputs/final_resume.pdf"
         export_html_to_pdf(html_code, pdf_path)
 
