@@ -32,3 +32,4 @@ tqdm
 numpy
 pandas
 beautifulsoup4
+reportlab
