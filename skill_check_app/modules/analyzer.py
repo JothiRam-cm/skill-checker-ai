@@ -1,7 +1,7 @@
 import json
 import re
 from typing import Dict
-from modules.llm_switcher import call_model
+from skill_check_app.modules.llm_switcher import call_model
 
 
 # -----------------------------------------------------------------
