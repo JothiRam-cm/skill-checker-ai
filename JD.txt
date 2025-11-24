@@ -1,0 +1,73 @@
+Job Title: Junior Data Scientist
+Location: Bangalore / Remote
+Experience: 0–2 years
+Employment Type: Full-time
+
+About the Role
+
+We are looking for a Junior Data Scientist to join our analytics team.
+The ideal candidate has strong foundations in Python, SQL, and data analysis,
+and is eager to work on real-world machine learning problems.
+
+Key Responsibilities
+
+Clean, preprocess, and analyze structured and unstructured datasets
+
+Develop basic machine learning models (classification, regression, clustering)
+
+Build dashboards and reports to communicate insights
+
+Work closely with senior data scientists and data engineers
+
+Assist in developing, testing, and deploying predictive models
+
+Document workflows, experiments, and results
+
+Participate in code reviews and follow best practices
+
+Perform exploratory data analysis (EDA) to identify trends and patterns
+
+Required Skills
+
+Strong proficiency in Python
+
+Experience with Pandas, NumPy, and Matplotlib/Seaborn
+
+Solid understanding of SQL (queries, joins, aggregations)
+
+Familiarity with scikit-learn for basic ML
+
+Knowledge of statistics, probability, and hypothesis testing
+
+Experience working with Git
+
+Good communication and problem-solving skills
+
+Preferred Skills (Good to Have)
+
+Experience with Tableau or Power BI
+
+Exposure to machine learning pipelines
+
+Basic understanding of cloud platforms (AWS / GCP / Azure)
+
+Knowledge of Streamlit for simple data apps
+
+Familiarity with NLP basics
+
+Educational Qualification
+
+Bachelor’s degree in Computer Science, Data Science, Statistics, Engineering,
+Mathematics, or a related field.
+
+Benefits
+
+Competitive salary
+
+Mentorship from senior data scientists
+
+Opportunity to work on real production ML systems
+
+Health insurance, flexible working hours
+
+Learning budget for courses and certifications

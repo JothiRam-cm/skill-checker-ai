@@ -1,0 +1,34 @@
+# ---- Core App ----
+streamlit
+python-dotenv
+
+# ---- Parsing ----
+pypdf2
+pdfplumber
+python-docx
+docx2txt
+
+# ---- NLP & ML ----
+spacy
+transformers
+sentence-transformers
+scikit-learn
+nltk
+
+# ---- LaTeX Tools ----
+pylatexenc
+
+# ---- LLM Clients ----
+groq
+google-generativeai
+ollama
+
+# Optional for better embeddings
+huggingface-hub
+
+# Utility
+requests
+tqdm
+numpy
+pandas
+beautifulsoup4
