@@ -8,10 +8,10 @@ ENV_GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 ENV_GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # Internal Modules
-from skill_check_app.modules.parser import parse_resume, parse_jd
-from skill_check_app.modules.analyzer import analyze_resume_vs_jd
-from skill_check_app.modules.rewriter import rewrite_full_resume_html
-from skill_check_app.modules.exporter import export_html_to_pdf
+from modules.parser import parse_resume, parse_jd
+from modules.analyzer import analyze_resume_vs_jd
+from modules.rewriter import rewrite_full_resume_html
+from modules.exporter import export_html_to_pdf
 
 # External Clients
 import ollama
