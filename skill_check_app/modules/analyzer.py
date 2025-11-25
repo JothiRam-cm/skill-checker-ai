@@ -48,27 +48,36 @@ def analyze_resume_vs_jd(
 ) -> Dict:
     
     prompt = f"""
-You are an ATS Evaluation Engine.
-Return ONLY a clean JSON object. NO commentary.
+You are an ATS Evaluation Engine created to perform a deep, multi-layered analysis of resume–job description fit.
 
-JSON SCHEMA:
-{{
-  "ats_score": int,
-  "fit_score": int,
-  "keyword_coverage": float,
-  "matched_skills": [string],
-  "missing_skills": [string],
-  "summary_feedback": string,
-  "experience_feedback": string,
-  "missing_keywords": [string],
-  "final_recommendation": string
-}}
+Return ONLY a clean JSON object. NO commentary, NO markdown, NO backticks.
 
-REQUIREMENTS:
-- Output must be STRICT JSON.
-- No extra text.
-- No backticks.
-- Must contain all keys.
+JSON SCHEMA (STRICT):
+{
+  "ats_score": int,                    // Overall ATS compatibility score (0–100)
+  "fit_score": int,                    // How well the candidate fits this job (0–100)
+  "keyword_coverage": float,           // % of job keywords found in resume (0.0–1.0)
+  "matched_skills": [string],          // Skills from JD that the resume already covers
+  "missing_skills": [string],          // Skills required but NOT found in the resume
+  "summary_feedback": string,          // 5–6 line summary of how well the resume matches the JD
+  "experience_feedback": string,       // Critical evaluation of candidate’s past experience vs JD responsibilities
+  "missing_keywords": [string],        // JD keywords not present in resume text
+  "final_recommendation": string       // Clear verdict: "Strong Fit", "Moderate Fit", or "Weak Fit" + reasoning
+}
+
+INSTRUCTIONS — ENSURE ALL:
+1. Output MUST be STRICT JSON.  
+2. No backticks, no prose outside the JSON.  
+3. JSON keys must appear exactly as specified.  
+4. All fields MUST be filled.  
+5. The evaluation must:
+   - Extract keywords from the job description.
+   - Compare them against the resume.
+   - Analyze experience depth, recency, and relevance.
+   - Judge whether the candidate is FIT for the job.
+   - Include reasoning inside feedback fields.
+6. “final_recommendation” MUST explicitly state whether **I am fit for this job** based on evidence.
+7. Treat the resume and JD exactly as provided — no external assumptions.
 
 RESUME:
 {resume_text}
